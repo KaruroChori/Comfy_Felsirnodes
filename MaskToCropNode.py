@@ -42,10 +42,11 @@ class MaskToCropNode:
 def op(original_image,mask_in, resolution, fit_inside, force_square, padding):
     width = mask_in.shape[2]
     height = mask_in.shape[1]
-    center = [ np.average(indices) for indices in np.where(mask_in >= 0.5   ) ]
 
     limits_min = [ np.min(indices) for indices in np.where(mask_in >= 0.5   ) ]
     limits_max = [ np.max(indices) for indices in np.where(mask_in >= 0.5   ) ]
+    center = [0,(limits_min[1] + limits_max[1])/2.0,(limits_min[2] + limits_max[2])/2.0]
+
     coverage = (limits_max[2]-limits_min[2]+padding)/width if width<height else (limits_max[1]-limits_min[1]+padding)/height
     if force_square==True:
         return focalrecaleimage(original_image,resolution,resolution,center[2]/width,center[1]/height,coverage,fit_inside)
@@ -58,6 +59,7 @@ def op(original_image,mask_in, resolution, fit_inside, force_square, padding):
     #variance = [ np.var(indices) for indices in np.where(mask_in >= 0.5   ) ]
     #varx = math.sqrt(variance[2]/width/width)
     #vary = math.sqrt(variance[1]/height/height)
+    #center = [ np.average(indices) for indices in np.where(mask_in >= 0.5   ) ]
     # Use the variance to determine an approximation of the zoom level needed.
     #return (resolution,resolution,center[2]/width,center[1]/height,coverage)
     
